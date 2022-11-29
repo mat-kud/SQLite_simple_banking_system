@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 public class CardNumberValidator {
     public boolean isCardNumberValid(String cardNumber){
+        if(cardNumber.length() != 16 || cardNumber.charAt(0) == '-'
+            || !cardNumber.startsWith("400000")){
+            return false;
+        }
         String lastDigit = cardNumber.substring(15);
         String binAndAccountIdentifier = cardNumber.substring(0,15);
         int checkSum = calculateLuhnAlgorithmSum(binAndAccountIdentifier);

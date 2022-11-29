@@ -36,7 +36,6 @@ public class AccountMenu extends BaseMenu implements Menu {
                 }
                 case 2 -> account = addIncome(account);
                 case 3 -> account = makeTransfer(account);
-
                 case 4 -> {
                     deleteAccount(account);
                     MenuManager.runMainMenu();
@@ -69,7 +68,7 @@ public class AccountMenu extends BaseMenu implements Menu {
             System.out.println("You can't transfer money to the same account!");
             return account;
         }
-        if(transferToAccountNumber.length() != 16 || !cardNumberValidator.isCardNumberValid(transferToAccountNumber)){
+        if(!cardNumberValidator.isCardNumberValid(transferToAccountNumber)){
             System.out.println("Probably you made a mistake in the card number. Please try again!");
             return account;
         }
