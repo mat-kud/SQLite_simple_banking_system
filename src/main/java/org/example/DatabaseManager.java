@@ -10,17 +10,18 @@ import static org.example.Utils.create_table;
 
 
 public class DatabaseManager {
+    private final String dbName = "CARDS";
     private static DatabaseManager instanceOfDatabaseManager = null;
     private final SQLiteDataSource dataSource = new SQLiteDataSource();
 
-    private DatabaseManager(String dbName) {
+    private DatabaseManager() {
         dataSource.setUrl("jdbc:sqlite:" + dbName);
         init();
     }
 
-    public static DatabaseManager getInstanceOfDatabaseManager(String dbName) {
+    public static DatabaseManager getInstanceOfDatabaseManager() {
         if (instanceOfDatabaseManager == null) {
-            instanceOfDatabaseManager = new DatabaseManager(dbName);
+            instanceOfDatabaseManager = new DatabaseManager();
         }
         return instanceOfDatabaseManager;
     }
@@ -29,7 +30,6 @@ public class DatabaseManager {
         try (final Connection dataSourceConnection = dataSource.getConnection();
              final Statement statement = dataSourceConnection.createStatement()) {
 
-            //statement.executeUpdate(delete_table);
             statement.executeUpdate(create_table);
 
         } catch (SQLException e) {
