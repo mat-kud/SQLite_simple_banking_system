@@ -2,12 +2,12 @@
 
 Used technologies: **Java**, **SQLite-jdbc**
 
-###Features:
+**Features:**
 - creating card's number with the usage of Luhn-Algorithm
 - adding income to account
 - transferring money between existing accounts
 
-###Database start arguments
+**Database start arguments**
 
 Providing command "-filename databaseName" through Console Line Interface is required. DatabaseName will be the name of your database.  
 For Intellij IDEA users, click `Run` (or Alt + U) then from dropdown menu select `Edit configurations...`.
