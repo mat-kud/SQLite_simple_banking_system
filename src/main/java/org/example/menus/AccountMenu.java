@@ -27,67 +27,76 @@ public class AccountMenu extends BaseMenu implements Menu {
             0. Exit
             """);
 
-            int choice = Integer.parseInt(scanner.nextLine());
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
 
-            switch (choice) {
-                case 1 -> {
-                    double balance = account.getBalance();
-                    System.out.println("Balance:" + balance);
+                switch (choice) {
+                    case 1 -> System.out.println("Balance:" + account.getBalance());
+                    case 2 -> account = addIncome(account);
+                    case 3 -> account = makeTransfer(account);
+                    case 4 -> {
+                        deleteAccount(account);
+                        MenuManager.runMainMenu();
+                    }
+                    case 5 -> {
+                        System.out.println("You have successfully logged out!");
+                        MenuManager.runMainMenu();
+                    }
+                    case 0 -> System.exit(0);
                 }
-                case 2 -> account = addIncome(account);
-                case 3 -> account = makeTransfer(account);
-                case 4 -> {
-                    deleteAccount(account);
-                    MenuManager.runMainMenu();
-                }
-                case 5 -> {
-                    System.out.println("You have successfully logged out!");
-                    MenuManager.runMainMenu();
-                }
-                case 0 -> System.exit(0);
-                default -> System.out.println("Wrong number");
+            } catch (NumberFormatException e){
+                System.err.println("Wrong input format. Only following numbers are accepted: 0, 1, 2, 3, 4, 5.");
             }
         }
     }
 
     private Account addIncome(Account account){
-        System.out.println("Enter income:");
-        int income = Integer.parseInt(scanner.nextLine());
-        accountHandler.updateAccountBalance(account.getCardNumber(), income);
-        account = accountHandler.getAccount(account.getCardNumber());
-        System.out.println("Income was added!");
+        try {
+            System.out.println("Enter income:");
+            int income = Integer.parseInt(scanner.nextLine());
+            accountHandler.updateAccountBalance(account.getCardNumber(), income);
+            account = accountHandler.getAccount(account.getCardNumber());
+            System.out.println("Income was added!");
+        } catch (NumberFormatException e){
+            System.err.println("Wrong income input format.");
+        }
         return account;
     }
 
     private Account makeTransfer(Account account){
         System.out.println("Transfer");
         System.out.println("Enter card number:");
+
         String transferToAccountNumber = scanner.nextLine();
 
         if(transferToAccountNumber.equals(account.getCardNumber())){
-            System.out.println("You can't transfer money to the same account!");
+            System.err.println("You can't transfer money to the same account!");
             return account;
         }
         if(!cardNumberValidator.isCardNumberValid(transferToAccountNumber)){
-            System.out.println("Probably you made a mistake in the card number. Please try again!");
+            System.err.println("Probably you made a mistake in the card number. Please try again!");
             return account;
         }
         if(accountHandler.getAccount(transferToAccountNumber) == null){
-            System.out.println("Such a card does not exist.");
+            System.err.println("Such a card does not exist.");
             return account;
         }
 
-        System.out.println("Enter how much money you want to transfer:");
-        int transferAmount = Integer.parseInt(scanner.nextLine());
+        try {
+            System.out.println("Enter how much money you want to transfer:");
+            int transferAmount = Integer.parseInt(scanner.nextLine());
 
-        if(transferAmount > account.getBalance()){
-            System.out.println("Not enough money!");
+            if (transferAmount > account.getBalance()) {
+                System.err.println("Not enough money!");
+                return account;
+            }
+            accountHandler.updateAccountBalance(transferToAccountNumber, transferAmount);
+            accountHandler.updateAccountBalance(account.getCardNumber(), -transferAmount);
+            System.out.println("Success!");
+        } catch (NumberFormatException e){
+            System.err.println("Wrong transfer input format");
             return account;
         }
-        accountHandler.updateAccountBalance(transferToAccountNumber, transferAmount);
-        accountHandler.updateAccountBalance(account.getCardNumber(), -transferAmount);
-        System.out.println("Success!");
-
         return accountHandler.getAccount(account.getCardNumber());
     }
 

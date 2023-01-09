@@ -25,7 +25,7 @@ public class LogInMenu extends BaseMenu implements Menu {
             System.out.println("You have successfully logged in!");
             MenuManager.runAccountMenu(account);
         } else {
-            System.out.println("Wrong card number or PIN!");
+            System.err.println("Wrong card number or PIN!");
         }
     }
 }
