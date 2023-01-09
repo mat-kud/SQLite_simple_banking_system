@@ -22,8 +22,8 @@ public class MainMenu extends BaseMenu implements Menu {
                 int choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
-                    case 1 -> MenuManager.runCreateAccountMenu();
-                    case 2 -> MenuManager.runLogInMenu();
+                    case 1 -> MenuManager.executeMenu(new CreateAccountMenu(accountHandler));
+                    case 2 -> MenuManager.executeMenu(new LogInMenu(accountHandler));
                     case 0 -> {
                         System.out.println();
                         System.out.println("Bye!");

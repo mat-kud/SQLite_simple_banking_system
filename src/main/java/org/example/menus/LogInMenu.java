@@ -23,7 +23,7 @@ public class LogInMenu extends BaseMenu implements Menu {
         if (account != null && account.verifyCardNumber(cardNumber)
                 && account.verifyCardPin(cardPin)) {
             System.out.println("You have successfully logged in!");
-            MenuManager.runAccountMenu(account);
+            MenuManager.executeMenu(new AccountMenu(accountHandler, account));
         } else {
             System.err.println("Wrong card number or PIN!");
         }

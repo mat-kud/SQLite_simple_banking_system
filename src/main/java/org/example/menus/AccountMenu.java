@@ -36,11 +36,11 @@ public class AccountMenu extends BaseMenu implements Menu {
                     case 3 -> account = makeTransfer(account);
                     case 4 -> {
                         deleteAccount(account);
-                        MenuManager.runMainMenu();
+                        MenuManager.executeMenu(new MainMenu(accountHandler));
                     }
                     case 5 -> {
                         System.out.println("You have successfully logged out!");
-                        MenuManager.runMainMenu();
+                        MenuManager.executeMenu(new MainMenu(accountHandler));
                     }
                     case 0 -> System.exit(0);
                 }
