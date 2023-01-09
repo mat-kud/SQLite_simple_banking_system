@@ -1,5 +1,7 @@
-package org.example;
+package org.example.managers;
 
+import org.example.handlers.AccountHandler;
+import org.example.entities.Account;
 import org.example.menus.*;
 
 public class MenuManager {

@@ -1,7 +1,7 @@
 package org.example.menus;
 
 
-import org.example.AccountHandler;
+import org.example.handlers.AccountHandler;
 
 import java.util.Scanner;
 

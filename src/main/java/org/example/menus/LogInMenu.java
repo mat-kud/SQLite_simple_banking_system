@@ -1,9 +1,9 @@
 package org.example.menus;
 
 
-import org.example.Account;
-import org.example.AccountHandler;
-import org.example.MenuManager;
+import org.example.entities.Account;
+import org.example.handlers.AccountHandler;
+import org.example.managers.MenuManager;
 
 public class LogInMenu extends BaseMenu implements Menu {
 

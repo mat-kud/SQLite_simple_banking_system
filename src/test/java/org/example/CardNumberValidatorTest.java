@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.validators.CardNumberValidator;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -28,7 +29,7 @@ public class CardNumberValidatorTest {
     }
 
     @Test(dataProvider = "invalidCardNumbers")
-    public void givenInvalidCardNumberWhenValidatedShouldReturnFalse(String cardNumber){
+    public void givenInvalidCardNumberWhenValidatedThenShouldReturnFalse(String cardNumber){
         Assert.assertFalse(cardNumberValidator.isCardNumberValid(cardNumber));
     }
 

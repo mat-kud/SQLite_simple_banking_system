@@ -1,11 +1,10 @@
 package org.example.menus;
 
 
-import org.example.AccountHandler;
-import org.example.MenuManager;
+import org.example.handlers.AccountHandler;
+import org.example.managers.MenuManager;
 
 public class MainMenu extends BaseMenu implements Menu {
-
 
     public MainMenu(AccountHandler accountHandler) {
         super(accountHandler);
@@ -17,8 +16,7 @@ public class MainMenu extends BaseMenu implements Menu {
             System.out.println("""
                     1. Create an account
                     2. Log into account
-                    0. Exit
-                    """);
+                    0. Exit""");
 
             int choice = Integer.parseInt(scanner.nextLine());
 

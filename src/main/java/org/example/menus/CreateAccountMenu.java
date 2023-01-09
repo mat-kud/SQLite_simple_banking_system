@@ -1,10 +1,12 @@
 package org.example.menus;
 
-
-import org.example.AccountHandler;
+import org.example.handlers.AccountHandler;
+import org.example.generators.CardNumberGenerator;
+import org.example.generators.PinGenerator;
 
 public class CreateAccountMenu extends BaseMenu implements Menu {
-
+    private final CardNumberGenerator cardNumberGenerator = new CardNumberGenerator();
+    private final PinGenerator pinGenerator = new PinGenerator();
 
     public CreateAccountMenu(AccountHandler accountHandler) {
         super(accountHandler);
@@ -12,8 +14,21 @@ public class CreateAccountMenu extends BaseMenu implements Menu {
 
     @Override
     public void execute() {
-        String[] cardInfo = accountHandler.createAccount();
-        printCardInfo(cardInfo[0], cardInfo[1]);
+        while (true) {
+            String cardNumber = cardNumberGenerator.generateCardNumber();
+            String pin = pinGenerator.generatePinNumber();
+
+            if (verifyCardNumberIsUnique(cardNumber)) {
+                accountHandler.createAccount(cardNumber, pin);
+                printCardInfo(cardNumber, pin);
+                break;
+            }
+        }
+    }
+
+    private boolean verifyCardNumberIsUnique(String cardNumber){
+        return accountHandler.getAllAccountsNumbers().stream()
+                .noneMatch(num -> num.equals(cardNumber));
     }
 
     private void printCardInfo(String cardNumber, String cardPin) {

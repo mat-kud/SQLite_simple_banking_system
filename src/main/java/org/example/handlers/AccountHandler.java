@@ -1,4 +1,7 @@
-package org.example;
+package org.example.handlers;
+
+import org.example.entities.Account;
+import org.example.managers.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,14 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
-import static org.example.Utils.*;
-
+import static org.example.utils.Queries.*;
 
 public class AccountHandler {
-    private final CardNumberGenerator cardNumberGenerator = new CardNumberGenerator();
-    private final PinGenerator pinGenerator = new PinGenerator();
     private final DatabaseManager databaseManager;
+    private final String tableName = "cards";
+    private final BiFunction<String, String, String> prepareQuery = String::format;
 
 
     public AccountHandler(DatabaseManager databaseManager){
@@ -21,39 +24,24 @@ public class AccountHandler {
 
     }
 
-    public String[] createAccount(){
-        while (true) {
-            String cardNumber = cardNumberGenerator.generateCardNumber();
-            String pin = pinGenerator.generatePinNumber();
-
-            if (verifyCardNumberIsUnique(cardNumber)) {
-                addAccount(cardNumber, pin);
-                return new String[]{cardNumber, pin};
-            }
-        }
-    }
-
-    private boolean verifyCardNumberIsUnique(String cardNumber){
-        return getAllAccountsNumbers().stream()
-                .noneMatch(num -> num.equals(cardNumber));
-    }
-
-    private void addAccount(String cardNumber, String cardPin) {
+    public void createAccount(String cardNumber, String cardPin) {
         try (final Connection connection = databaseManager.getDataSource().getConnection();
-             final PreparedStatement statement = connection.prepareStatement(insert)) {
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(insert, tableName))) {
 
             statement.setString(1, cardNumber);
             statement.setString(2, cardPin);
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding Account parameters" + e.getMessage());
+            System.err.println("Error while adding Account parameters" + e.getMessage());
         }
     }
 
     public Account getAccount(String number) {
         try (final Connection connection = databaseManager.getDataSource().getConnection();
-             final PreparedStatement statement = connection.prepareStatement(get_account_by_number)) {
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(get_account_by_number, tableName))) {
 
             statement.setString(1, number);
 
@@ -68,7 +56,7 @@ public class AccountHandler {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error reading from file");
+            System.err.println("Error reading from file");
             throw new RuntimeException("Error while finding element" + e.getMessage());
         }
     }
@@ -76,7 +64,8 @@ public class AccountHandler {
     public List<String> getAllAccountsNumbers(){
         List<String> cardNumbers = new ArrayList<>();
         try (final Connection connection = databaseManager.getDataSource().getConnection();
-             final PreparedStatement statement = connection.prepareStatement(get_accounts_by_number)) {
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(get_accounts_by_number, tableName))) {
 
             try (final ResultSet res = statement.executeQuery()) {
                 if (res.next()) {
@@ -93,26 +82,28 @@ public class AccountHandler {
 
     public void updateAccountBalance(String accNumber, int amount){
         try (final Connection connection = databaseManager.getDataSource().getConnection();
-             final PreparedStatement statement = connection.prepareStatement(update_account_balance)) {
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(update_account_balance, tableName))) {
 
             statement.setInt(1, amount);
             statement.setString(2, accNumber);
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while updating amount" + e.getMessage());
+            System.err.println("Error while updating amount" + e.getMessage());
         }
     }
 
     public void deleteAccount(String accNumber){
         try (final Connection connection = databaseManager.getDataSource().getConnection();
-             final PreparedStatement statement = connection.prepareStatement(delete_account_by_number)) {
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(delete_account_by_number, tableName))) {
 
             statement.setString(1, accNumber);
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while deleting account" + e.getMessage());
+            System.err.println("Error while deleting account" + e.getMessage());
         }
     }
 }
