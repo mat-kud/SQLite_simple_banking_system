@@ -1,12 +1,12 @@
 package org.example.utils;
 
-public class Queries {
+public class AccountQueries {
     public static String drop_table ="DROP TABLE IF EXISTS %s";
     public static String create_table = "CREATE TABLE IF NOT EXISTS %s"
             +"(id INTEGER, "
             +"number VARCHAR(16), "
             +"pin  VARCHAR(4), "
-            +"balance INTEGER DEFAULT 0)";
+            +"balance DOUBLE DEFAULT 0.0)";
 
     public static String insert = "INSERT INTO %s (number,pin) "
             +"VALUES(?,?)";

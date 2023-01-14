@@ -8,9 +8,12 @@ import org.example.menus.MainMenu;
 public class Main {
 
     public static void main(String[] args) {
+        final String dbName = "CARDS";
+        final String dataPath = "src/main/java/org/example/data/";
+        final String tableName = "cards";
         DatabaseManager databaseManager = DatabaseManager
-                .getInstanceOfDatabaseManager("CARDS", "src/main/java/org/example/data/");
-        databaseManager.createTable("cards");
+                .getInstanceOfDatabaseManager(dbName, dataPath);
+        databaseManager.createTable(tableName);
         AccountHandler accountHandler = new AccountHandler(databaseManager);
         MenuManager.executeMenu(new MainMenu(accountHandler));
     }

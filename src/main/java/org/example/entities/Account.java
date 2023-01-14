@@ -13,6 +13,12 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account(String cardNumber, String cardPin){
+        this.cardNumber = cardNumber;
+        this.cardPin = cardPin;
+        this.balance = 0;
+    }
+
     public String getCardNumber() {
         return cardNumber;
     }
