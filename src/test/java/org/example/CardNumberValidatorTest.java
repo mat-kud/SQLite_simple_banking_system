@@ -29,12 +29,12 @@ public class CardNumberValidatorTest {
     }
 
     @Test(dataProvider = "invalidCardNumbers")
-    public void givenInvalidCardNumberWhenValidatedThenShouldReturnFalse(String cardNumber){
+    public void given_invalid_card_number_when_validated_then_should_return_false(String cardNumber){
         Assert.assertFalse(cardNumberValidator.isCardNumberValid(cardNumber));
     }
 
     @Test(dataProvider = "validCardNumbers")
-    public void givenValidCardNumberWhenValidatedThenShouldReturnTrue(String cardNumber){
+    public void given_invalid_card_number_when_validated_then_should_return_true(String cardNumber){
         Assert.assertTrue(cardNumberValidator.isCardNumberValid(cardNumber));
     }
 }

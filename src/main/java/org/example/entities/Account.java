@@ -1,38 +1,26 @@
 package org.example.entities;
 
-public class Account {
-    private int id;
-    private final String cardNumber;
-    private final String cardPin;
-    private final double balance;
+import java.math.BigDecimal;
 
-    public Account(int id, String cardNumber, String cardPin, double balance){
-        this.id = id;
+public class Account {
+    private final String cardNumber;
+    private final BigDecimal balance;
+
+    public Account(String cardNumber){
         this.cardNumber = cardNumber;
-        this.cardPin = cardPin;
-        this.balance = balance;
+        this.balance = new BigDecimal("0");
     }
 
-    public Account(String cardNumber, String cardPin){
+    public Account(String cardNumber, BigDecimal balance){
         this.cardNumber = cardNumber;
-        this.cardPin = cardPin;
-        this.balance = 0;
+        this.balance = balance;
     }
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public double getBalance(){
+    public BigDecimal getBalance(){
         return this.balance;
     }
-
-    public boolean verifyCardNumber(String cardNumber){
-        return this.cardNumber.equals(cardNumber);
-    }
-
-    public boolean verifyCardPin(String cardPin){
-        return this.cardPin.equals(cardPin);
-    }
-
 }

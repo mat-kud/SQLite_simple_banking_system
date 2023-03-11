@@ -5,6 +5,7 @@ import org.example.exceptions.NotPositiveNumberException;
 import org.example.managers.DatabaseManager;
 import org.example.validators.CardNumberValidator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class AccountHandler {
@@ -19,6 +20,10 @@ public class AccountHandler {
 
     public void createAccount(String cardNumber, String cardPin) {
         databaseManager.createAccount(cardNumber, cardPin, tableName);
+    }
+
+    public Account authenticateAccount(String cardNumber, String cardPin) {
+        return databaseManager.authenticateAccount(cardNumber, cardPin, tableName);
     }
 
     public Account getAccount(String cardNumber) {
@@ -38,10 +43,10 @@ public class AccountHandler {
         databaseManager.deleteAccount(cardNumber, tableName);
     }
 
-    public Account addIncome(Account account, String incomeString) {
+    public Account deposit(Account account, String incomeString) {
         try {
-            double income = Double.parseDouble(incomeString);
-            if (income <= 0) {
+            BigDecimal income = new BigDecimal(incomeString);
+            if (income.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new NotPositiveNumberException();
             } else if (isDoublePrecisionExceedingTwoDecimalPlaces(income)) {
                 throw new NumberFormatException();
@@ -72,18 +77,18 @@ public class AccountHandler {
         }
 
         try {
-            double transferAmount = Double.parseDouble(transferAmountString);
-            if (transferAmount <= 0) {
+            BigDecimal transferAmount = new BigDecimal(transferAmountString);
+            if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new NotPositiveNumberException();
             } else if (isDoublePrecisionExceedingTwoDecimalPlaces(transferAmount)) {
                 throw new NumberFormatException();
             }
-            if (transferAmount > account.getBalance()) {
+            if (account.getBalance().compareTo(transferAmount) <= 0) {
                 System.err.println("Not enough money!");
                 return account;
             }
             databaseManager.updateAccountBalance(receiverAccountNumber, transferAmount, tableName);
-            databaseManager.updateAccountBalance(account.getCardNumber(), -transferAmount, tableName);
+            databaseManager.updateAccountBalance(account.getCardNumber(), transferAmount.negate(), tableName);
             System.out.println("Success!");
         } catch (NumberFormatException e) {
             System.err.println("Wrong transfer input format");
@@ -95,7 +100,7 @@ public class AccountHandler {
         return getAccount(account.getCardNumber());
     }
 
-    private boolean isDoublePrecisionExceedingTwoDecimalPlaces(Double number) {
-        return String.valueOf(number).split("\\.")[1].length() > 2;
+    private boolean isDoublePrecisionExceedingTwoDecimalPlaces(BigDecimal number) {
+        return number.scale() > 2;
     }
 }
