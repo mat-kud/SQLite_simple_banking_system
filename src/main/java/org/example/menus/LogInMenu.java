@@ -18,10 +18,9 @@ public class LogInMenu extends BaseMenu implements Menu {
         System.out.println("Enter your PIN:");
         String cardPin = scanner.nextLine();
 
-        Account account = accountHandler.getAccount(cardNumber);
+        Account account = accountHandler.authenticateAccount(cardNumber, cardPin);
 
-        if (account != null && account.verifyCardNumber(cardNumber)
-                && account.verifyCardPin(cardPin)) {
+        if (account != null && account.getCardNumber().equals(cardNumber)) {
             System.out.println("You have successfully logged in!");
             MenuManager.executeMenu(new AccountMenu(accountHandler, account));
         } else {

@@ -30,7 +30,7 @@ public class AccountMenu extends BaseMenu implements Menu {
 
                 switch (choice) {
                     case 1 -> System.out.println("Balance:" + account.getBalance());
-                    case 2 -> account = addIncome(account);
+                    case 2 -> account = deposit(account);
                     case 3 -> account = makeTransfer(account);
                     case 4 -> {
                         accountHandler.deleteAccount(account.getCardNumber());
@@ -48,10 +48,10 @@ public class AccountMenu extends BaseMenu implements Menu {
         }
     }
 
-    private Account addIncome(Account account){
+    private Account deposit(Account account){
         System.out.println("Enter income:");
         String incomeString = scanner.nextLine();
-        return accountHandler.addIncome(account, incomeString);
+        return accountHandler.deposit(account, incomeString);
     }
 
     private Account makeTransfer(Account account){

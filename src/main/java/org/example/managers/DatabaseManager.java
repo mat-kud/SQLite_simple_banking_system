@@ -3,6 +3,7 @@ package org.example.managers;
 import org.example.entities.Account;
 import org.sqlite.SQLiteDataSource;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,32 @@ public class DatabaseManager {
         }
     }
 
+    public Account authenticateAccount(String number, String  cardPin, String tableName) {
+        try (final Connection connection = dataSource.getConnection();
+             final PreparedStatement statement =
+                     connection.prepareStatement(prepareQuery.apply(get_account_by_number, tableName))) {
+
+            statement.setString(1, number);
+
+            try (final ResultSet res = statement.executeQuery()) {
+                if (res.next()) {
+                    final String pin = res.getString("pin");
+                    //verify pin
+                    if(!cardPin.equals(pin)){
+                        return null;
+                    }
+                    final BigDecimal balance = BigDecimal.valueOf(res.getDouble("balance"));
+                    return new Account(number, balance);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while authenticating card");
+            throw new RuntimeException("Error while finding element" + e.getMessage());
+        }
+    }
+
     public Account getAccount(String number, String tableName) {
         try (final Connection connection = dataSource.getConnection();
              final PreparedStatement statement =
@@ -74,10 +101,8 @@ public class DatabaseManager {
 
             try (final ResultSet res = statement.executeQuery()) {
                 if (res.next()) {
-                    final int id = res.getInt("id");
-                    final String pin = res.getString("pin");
-                    final double balance = res.getDouble("balance");
-                    return new Account(id, number, pin, balance);
+                    final BigDecimal balance = BigDecimal.valueOf(res.getDouble("balance"));
+                    return new Account(number, balance);
                 } else {
                     return null;
                 }
@@ -96,8 +121,7 @@ public class DatabaseManager {
 
             try (final ResultSet res = statement.executeQuery()) {
                 while (res.next()) {
-                    String cardNumber = res.getString("number");
-                    cardNumbers.add(cardNumber);
+                    cardNumbers.add(res.getString("number"));
                 }
             }
         } catch (SQLException e) {
@@ -107,12 +131,12 @@ public class DatabaseManager {
         return cardNumbers;
     }
 
-    public void updateAccountBalance(String accNumber, double amount, String tableName){
+    public void updateAccountBalance(String accNumber, BigDecimal amount, String tableName){
         try (final Connection connection = dataSource.getConnection();
              final PreparedStatement statement =
                      connection.prepareStatement(prepareQuery.apply(update_account_balance, tableName))) {
 
-            statement.setDouble(1, amount);
+            statement.setDouble(1, amount.doubleValue());
             statement.setString(2, accNumber);
 
             statement.executeUpdate();
